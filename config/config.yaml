@@ -55,30 +55,8 @@ schedule:
 platforms:
   enabled: true                         # 是否启用热榜平台抓取
   sources:
-    - id: "toutiao"
-      name: "今日头条"
-    - id: "baidu"
-      name: "百度热搜"
-    - id: "wallstreetcn-hot"
-      name: "华尔街见闻"
-    - id: "thepaper"
-      name: "澎湃新闻"
-    - id: "bilibili-hot-search"
-      name: "bilibili 热搜"
-    - id: "cls-hot"
-      name: "财联社热门"
-    - id: "ifeng"
-      name: "凤凰网"
-    - id: "tieba"
-      name: "贴吧"
-    - id: "weibo"
-      name: "微博"
-    - id: "douyin"
-      name: "抖音"
-    - id: "zhihu"
-      name: "知乎"
-
-
+    - id: "github"
+      name: "GitHub"
 
 # ===============================================================
 # 3. 数据源 - RSS 订阅
@@ -90,6 +68,19 @@ platforms:
 # ===============================================================
 rss:
   enabled: true                       # 是否启用 RSS 抓取
+  feeds:
+    - name: "Hacker News"
+      url: "https://hnrss.org/frontpage"
+    - name: "36氪"
+      url: "https://36kr.com/feed"
+    - name: "indienova 独立精神"
+      url: "https://indienova.com/feed/"
+    - name: "Game Informer"
+      url: "https://gameinformer.com/rss.xml"
+    - name: "gamesindustry.biz"
+      url: "https://www.gamesindustry.biz/feed"
+    - name: "触乐"
+      url: "https://www.chuapp.com/feed"
 
   # 文章新鲜度过滤配置（全局默认值）
   # 过滤掉发布时间超过指定天数的旧文章，避免同一篇文章重复出现在推送中
