@@ -69,18 +69,6 @@ platforms:
 rss:
   enabled: true                       # 是否启用 RSS 抓取
   feeds:
-    - name: "Hacker News"
-      url: "https://hnrss.org/frontpage"
-    - name: "36氪"
-      url: "https://36kr.com/feed"
-    - name: "indienova 独立精神"
-      url: "https://indienova.com/feed/"
-    - name: "Game Informer"
-      url: "https://gameinformer.com/rss.xml"
-    - name: "gamesindustry.biz"
-      url: "https://www.gamesindustry.biz/feed"
-    - name: "触乐"
-      url: "https://www.chuapp.com/feed"
 
   # 文章新鲜度过滤配置（全局默认值）
   # 过滤掉发布时间超过指定天数的旧文章，避免同一篇文章重复出现在推送中
@@ -114,9 +102,25 @@ rss:
       enabled: false                  # 禁用
       # max_age_days: 3               # 示例：推送 3 天内的文章（更新较慢的博客）
      
-    - id: "yahoo-finance"
-      name: "雅虎财经"
-      url: "https://finance.yahoo.com/news/rssindex"
+    - id: "36kr"
+      name: "36氪"
+      url: "https://36kr.com/feed"
+
+    - id: "indienova"
+      name: "indienova 独立精神"
+      url: "https://indienova.com/feed/"
+
+    - id: "game-informer"
+      name: "Game Informer"
+      url: "https://gameinformer.com/rss.xml"
+
+    - id: "gamesindustrybiz"
+      name: "gamesindustry.biz"
+      url: "https://www.gamesindustry.biz/feed"
+
+    - id: "chule"
+      name: "触乐"
+      url: "https://www.chuapp.com/feed"
 
     # 自定义源示例
     # - id: "custom-feed"
