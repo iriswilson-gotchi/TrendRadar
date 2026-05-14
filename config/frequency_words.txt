@@ -158,9 +158,9 @@
 人工智能
 /\bAGI\b/i => AGI
 /\bAIGC\b/i => AIGC
-多模态
 /\bagent\b/i => AI Agent
 /\btoken\b/i
+/\bvibe coding\b|\bvibecoding\b/i => Vibe Coding
 
 # 模型架构
 /\bLLM\b/i => LLM
@@ -208,12 +208,11 @@ prompt
 /\bHugging Face\b|\bHuggingFace\b/i
 /\barXiv\b/i
 /\bharness\b/i
+/\bHermes\b/i => Hermes
 
 # AI应用
 /\bMidjourney\b/i => Midjourney
 /\bStable Diffusion\b/i => Stable Diffusion
-/\bvibe coding\b|\bvibecoding\b/i => Vibe Coding
-/\bHermes\b/i => Hermes
 
 # AI治理
 AI安全
@@ -236,6 +235,13 @@ AI监管
 
 [自动驾驶/智能驾驶]
 /自动驾驶|无人驾驶|智驾|智能驾驶|\bWaymo\b|\bRobotaxi\b|\bMomenta\b|萝卜快跑|特斯拉FSD|FSD/i => 自动驾驶
+
+[世界模型]
+/世界模型|\bworld model\b|\bsora\b|\bgenie\b/i => 世界模型
+/李飞飞|FeiFeiLi|Fei-Fei Li/i => 李飞飞
+/杨立昆|LeCun\b|Yann LeCun\b/i => LeCun
+/\bJim Fan\b|范麟熙/i => Jim Fan
+/\bDavid Ha\b/i => David Ha
 
 [国产模型]
 /深度求索|幻方量化|梁文锋|\bDeepSeek\b/i => DeepSeek
