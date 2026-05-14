@@ -55,8 +55,8 @@ schedule:
 platforms:
   enabled: true                        # 是否启用热榜平台抓取
   sources:
-    - id: ""
-      name: ""
+    - id: "hackernews"
+      name: "Hacker News"
 
 # ===============================================================
 # 3. 数据源 - RSS 订阅
@@ -92,13 +92,9 @@ rss:
   # - 正整数：覆盖全局设置，只推送此天数内的文章
   # - 0：禁用此频道的新鲜度过滤，推送所有文章
   feeds:
-    - id: "hacker-news"
-      name: "Hacker News"
-      url: "https://hnrss.org/frontpage"
-
     - id: "importai"
       name: "importai"
-      url: "https://importai.httpssubstack.com/feed"
+      url: "https://importai.substack.com/feed"
 
     - id: "qbitai"
       name: "量子位"
@@ -120,7 +116,7 @@ rss:
 
     - id: "aiandgame"
       name: "AI and Game"
-      url: "https://api.substack.com/feed/podcast/1069672/s/123754/private/838acf8b-feee-4145-9613-126dd1ab53d1.rss"
+      url: "https://www.aiandgames.com/feed"
 
     - id: "indienova"
       name: "Indienova 独立精神"
@@ -148,7 +144,7 @@ rss:
 
     - id: "gitHubtrending"
       name: "GitHubTrending"
-      url: "https://mshibanern.github.io/GitHubTrendingRSS/daily/all.atom"
+      url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.atom"
       
 
     # 自定义源示例
