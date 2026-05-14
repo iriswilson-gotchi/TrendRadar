@@ -77,7 +77,7 @@ def _format_standalone_summaries(summaries: dict) -> str:
 
 
 def render_ai_analysis_markdown(result: AIAnalysisResult) -> str:
-    """渲染为通用 Markdown 格式（Telegram、企业微信、ntfy、Bark、Slack）"""
+    """渲染为通用 Markdown 格式"""
     if not result.success:
         if result.skipped:
             return f"ℹ️ {result.error}"
@@ -86,25 +86,13 @@ def render_ai_analysis_markdown(result: AIAnalysisResult) -> str:
     lines = ["**✨ AI 热点分析**", ""]
 
     if result.core_trends:
-        lines.extend(["**核心热点态势**", _format_list_content(result.core_trends), ""])
-
-    if result.sentiment_controversy:
-        lines.extend(
-            ["**舆论风向争议**", _format_list_content(result.sentiment_controversy), ""]
-        )
+        lines.extend(["**核心趋势与推演**", _format_list_content(result.core_trends), ""])
 
     if result.signals:
-        lines.extend(["**异动与弱信号**", _format_list_content(result.signals), ""])
+        lines.extend(["**弱信号与异动**", _format_list_content(result.signals), ""])
 
-    if result.rss_insights:
-        lines.extend(
-            ["**RSS 深度洞察**", _format_list_content(result.rss_insights), ""]
-        )
-
-    if result.outlook_strategy:
-        lines.extend(
-            ["**研判策略建议**", _format_list_content(result.outlook_strategy), ""]
-        )
+    if result.deep_dive:
+        lines.extend(["**值得精读**", _format_list_content(result.deep_dive), ""])
 
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
@@ -124,25 +112,13 @@ def render_ai_analysis_feishu(result: AIAnalysisResult) -> str:
     lines = ["**✨ AI 热点分析**", ""]
 
     if result.core_trends:
-        lines.extend(["**核心热点态势**", _format_list_content(result.core_trends), ""])
-
-    if result.sentiment_controversy:
-        lines.extend(
-            ["**舆论风向争议**", _format_list_content(result.sentiment_controversy), ""]
-        )
+        lines.extend(["**核心趋势与推演**", _format_list_content(result.core_trends), ""])
 
     if result.signals:
-        lines.extend(["**异动与弱信号**", _format_list_content(result.signals), ""])
+        lines.extend(["**弱信号与异动**", _format_list_content(result.signals), ""])
 
-    if result.rss_insights:
-        lines.extend(
-            ["**RSS 深度洞察**", _format_list_content(result.rss_insights), ""]
-        )
-
-    if result.outlook_strategy:
-        lines.extend(
-            ["**研判策略建议**", _format_list_content(result.outlook_strategy), ""]
-        )
+    if result.deep_dive:
+        lines.extend(["**值得精读**", _format_list_content(result.deep_dive), ""])
 
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
@@ -162,31 +138,13 @@ def render_ai_analysis_dingtalk(result: AIAnalysisResult) -> str:
     lines = ["### ✨ AI 热点分析", ""]
 
     if result.core_trends:
-        lines.extend(
-            ["#### 核心热点态势", _format_list_content(result.core_trends), ""]
-        )
-
-    if result.sentiment_controversy:
-        lines.extend(
-            [
-                "#### 舆论风向争议",
-                _format_list_content(result.sentiment_controversy),
-                "",
-            ]
-        )
+        lines.extend(["#### 核心趋势与推演", _format_list_content(result.core_trends), ""])
 
     if result.signals:
-        lines.extend(["#### 异动与弱信号", _format_list_content(result.signals), ""])
+        lines.extend(["#### 弱信号与异动", _format_list_content(result.signals), ""])
 
-    if result.rss_insights:
-        lines.extend(
-            ["#### RSS 深度洞察", _format_list_content(result.rss_insights), ""]
-        )
-
-    if result.outlook_strategy:
-        lines.extend(
-            ["#### 研判策略建议", _format_list_content(result.outlook_strategy), ""]
-        )
+    if result.deep_dive:
+        lines.extend(["#### 值得精读", _format_list_content(result.deep_dive), ""])
 
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
@@ -201,88 +159,53 @@ def render_ai_analysis_html(result: AIAnalysisResult) -> str:
     if not result.success:
         if result.skipped:
             return f'<div class="ai-info">ℹ️ {_escape_html(result.error)}</div>'
-        return (
-            f'<div class="ai-error">⚠️ AI 分析失败: {_escape_html(result.error)}</div>'
-        )
+        return f'<div class="ai-error">⚠️ AI 分析失败: {_escape_html(result.error)}</div>'
 
     html_parts = ['<div class="ai-analysis">', "<h3>✨ AI 热点分析</h3>"]
 
     if result.core_trends:
         content = _format_list_content(result.core_trends)
         content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section">',
-                "<h4>核心热点态势</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
-
-    if result.sentiment_controversy:
-        content = _format_list_content(result.sentiment_controversy)
-        content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section">',
-                "<h4>舆论风向争议</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
+        html_parts.extend([
+            '<div class="ai-section">',
+            "<h4>核心趋势与推演</h4>",
+            f'<div class="ai-content">{content_html}</div>',
+            "</div>",
+        ])
 
     if result.signals:
         content = _format_list_content(result.signals)
         content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section">',
-                "<h4>异动与弱信号</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
+        html_parts.extend([
+            '<div class="ai-section">',
+            "<h4>弱信号与异动</h4>",
+            f'<div class="ai-content">{content_html}</div>',
+            "</div>",
+        ])
 
-    if result.rss_insights:
-        content = _format_list_content(result.rss_insights)
+    if result.deep_dive:
+        content = _format_list_content(result.deep_dive)
         content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section">',
-                "<h4>RSS 深度洞察</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
-
-    if result.outlook_strategy:
-        content = _format_list_content(result.outlook_strategy)
-        content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section ai-conclusion">',
-                "<h4>研判策略建议</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
+        html_parts.extend([
+            '<div class="ai-section">',
+            "<h4>值得精读</h4>",
+            f'<div class="ai-content">{content_html}</div>',
+            "</div>",
+        ])
 
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
         if summaries_text:
             summaries_html = _escape_html(summaries_text).replace("\n", "<br>")
-            html_parts.extend(
-                [
-                    '<div class="ai-section">',
-                    "<h4>独立源点速览</h4>",
-                    f'<div class="ai-content">{summaries_html}</div>',
-                    "</div>",
-                ]
-            )
+            html_parts.extend([
+                '<div class="ai-section">',
+                "<h4>独立源点速览</h4>",
+                f'<div class="ai-content">{summaries_html}</div>',
+                "</div>",
+            ])
 
     html_parts.append("</div>")
     return "\n".join(html_parts)
-
 
 def render_ai_analysis_plain(result: AIAnalysisResult) -> str:
     """渲染为纯文本格式"""
@@ -294,21 +217,13 @@ def render_ai_analysis_plain(result: AIAnalysisResult) -> str:
     lines = ["【✨ AI 热点分析】", ""]
 
     if result.core_trends:
-        lines.extend(["[核心热点态势]", _format_list_content(result.core_trends), ""])
-
-    if result.sentiment_controversy:
-        lines.extend(
-            ["[舆论风向争议]", _format_list_content(result.sentiment_controversy), ""]
-        )
+        lines.extend(["[核心趋势与推演]", _format_list_content(result.core_trends), ""])
 
     if result.signals:
-        lines.extend(["[异动与弱信号]", _format_list_content(result.signals), ""])
+        lines.extend(["[弱信号与异动]", _format_list_content(result.signals), ""])
 
-    if result.rss_insights:
-        lines.extend(["[RSS 深度洞察]", _format_list_content(result.rss_insights), ""])
-
-    if result.outlook_strategy:
-        lines.extend(["[研判策略建议]", _format_list_content(result.outlook_strategy), ""])
+    if result.deep_dive:
+        lines.extend(["[值得精读]", _format_list_content(result.deep_dive), ""])
 
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
@@ -319,12 +234,7 @@ def render_ai_analysis_plain(result: AIAnalysisResult) -> str:
 
 
 def render_ai_analysis_telegram(result: AIAnalysisResult) -> str:
-    """渲染为 Telegram HTML 格式（配合 parse_mode: HTML）
-
-    Telegram Bot API 的 HTML 模式仅支持有限标签：
-    <b>, <i>, <u>, <s>, <code>, <pre>, <a href="">, <blockquote>
-    换行直接使用 \\n，不支持 <br>, <div>, <h1>-<h6> 等标签。
-    """
+    """渲染为 Telegram HTML 格式"""
     if not result.success:
         if result.skipped:
             return f"ℹ️ {_escape_html(result.error)}"
@@ -333,19 +243,13 @@ def render_ai_analysis_telegram(result: AIAnalysisResult) -> str:
     lines = ["<b>✨ AI 热点分析</b>", ""]
 
     if result.core_trends:
-        lines.extend(["<b>核心热点态势</b>", _escape_html(_format_list_content(result.core_trends)), ""])
-
-    if result.sentiment_controversy:
-        lines.extend(["<b>舆论风向争议</b>", _escape_html(_format_list_content(result.sentiment_controversy)), ""])
+        lines.extend(["<b>核心趋势与推演</b>", _escape_html(_format_list_content(result.core_trends)), ""])
 
     if result.signals:
-        lines.extend(["<b>异动与弱信号</b>", _escape_html(_format_list_content(result.signals)), ""])
+        lines.extend(["<b>弱信号与异动</b>", _escape_html(_format_list_content(result.signals)), ""])
 
-    if result.rss_insights:
-        lines.extend(["<b>RSS 深度洞察</b>", _escape_html(_format_list_content(result.rss_insights)), ""])
-
-    if result.outlook_strategy:
-        lines.extend(["<b>研判策略建议</b>", _escape_html(_format_list_content(result.outlook_strategy)), ""])
+    if result.deep_dive:
+        lines.extend(["<b>值得精读</b>", _escape_html(_format_list_content(result.deep_dive)), ""])
 
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
@@ -375,7 +279,6 @@ def render_ai_analysis_html_rich(result: AIAnalysisResult) -> str:
     if not result:
         return ""
 
-    # 检查是否成功
     if not result.success:
         if result.skipped:
             return f"""
@@ -401,16 +304,7 @@ def render_ai_analysis_html_rich(result: AIAnalysisResult) -> str:
         content_html = _escape_html(content).replace("\n", "<br>")
         ai_html += f"""
                     <div class="ai-block">
-                        <div class="ai-block-title">核心热点态势</div>
-                        <div class="ai-block-content">{content_html}</div>
-                    </div>"""
-
-    if result.sentiment_controversy:
-        content = _format_list_content(result.sentiment_controversy)
-        content_html = _escape_html(content).replace("\n", "<br>")
-        ai_html += f"""
-                    <div class="ai-block">
-                        <div class="ai-block-title">舆论风向争议</div>
+                        <div class="ai-block-title">核心趋势与推演</div>
                         <div class="ai-block-content">{content_html}</div>
                     </div>"""
 
@@ -419,25 +313,16 @@ def render_ai_analysis_html_rich(result: AIAnalysisResult) -> str:
         content_html = _escape_html(content).replace("\n", "<br>")
         ai_html += f"""
                     <div class="ai-block">
-                        <div class="ai-block-title">异动与弱信号</div>
+                        <div class="ai-block-title">弱信号与异动</div>
                         <div class="ai-block-content">{content_html}</div>
                     </div>"""
 
-    if result.rss_insights:
-        content = _format_list_content(result.rss_insights)
+    if result.deep_dive:
+        content = _format_list_content(result.deep_dive)
         content_html = _escape_html(content).replace("\n", "<br>")
         ai_html += f"""
                     <div class="ai-block">
-                        <div class="ai-block-title">RSS 深度洞察</div>
-                        <div class="ai-block-content">{content_html}</div>
-                    </div>"""
-
-    if result.outlook_strategy:
-        content = _format_list_content(result.outlook_strategy)
-        content_html = _escape_html(content).replace("\n", "<br>")
-        ai_html += f"""
-                    <div class="ai-block">
-                        <div class="ai-block-title">研判策略建议</div>
+                        <div class="ai-block-title">值得精读</div>
                         <div class="ai-block-content">{content_html}</div>
                     </div>"""
 
