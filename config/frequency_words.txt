@@ -278,7 +278,7 @@ AI监管
 [游戏]
 /腾讯游戏|天美|光子|王者荣耀|和平精英|英雄联盟|穿越火线|地下城与勇士|\bLoL\b|\bDNF\b|金铲铲/i => 腾讯游戏
 /网易游戏|永劫无间|逆水寒|蛋仔派对|阴阳师|第五人格|明日之后|燕云十六声|天谕|暗黑破坏神：不朽/i => 网易游戏
-/米哈游|原神|崩坏|绝区零|星穹铁道|星布谷地|\bVarsapura\b|崩坏：因缘精灵|蔡浩宇|\bAnuttacon\b|\bHoYoverse\b/i => 米哈游
+/米哈游|原神|崩坏|绝区零|星穹铁道|星布谷地|\bVarsapura\b|崩坏：因缘精灵|刘伟|蔡浩宇|\bAnuttacon\b|\bHoYoverse\b/i => 米哈游
 /\bSteam\b/i => Steam
 /\bPS5\b|\bPS6\b|\bPlayStation\b/i => PlayStation
 /\bXbox\b/i => Xbox
@@ -291,10 +291,10 @@ AI监管
 /卡普空|\bCapcom\b|生化危机|怪物猎人|逆转裁判/i => 卡普空
 /\bSquare Enix\b|史克威尔|最终幻想|勇者斗恶龙/i => Square Enix
 /\bGTA\b|\bGTA6\b|\bGTA VI\b|Rockstar|R星|Take-Two/i => GTA
-/黑神话|冯骥|游戏科学/ => 黑神话悟空
 /影之刃零|梁其伟|灵游坊/ => 影之刃零
 /\b3A\b|\bAAA\b/i => 3A大作
 开放世界
+/黑神话|冯骥|游戏科学/ => 黑神话悟空
 
 [独立游戏]
 /独立游戏|\bindie\b|\bIndie Game\b|独游|\bIndie World\b/i => 独立游戏
