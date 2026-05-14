@@ -265,7 +265,6 @@ display:
   #   region_order:
   #     - ai_analysis    ← 移到第一行，AI 分析就会显示在最顶部
   #     - new_items
-  #     - hotlist
   #     - ...
   # 注意：区域需同时满足两个条件才会显示：
   #   1. 在此列表中
