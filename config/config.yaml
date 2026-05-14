@@ -96,48 +96,56 @@ rss:
       name: "Hacker News"
       url: "https://hnrss.org/frontpage"
 
+    - id: "importai"
+      name: "importai"
+      url: "https://importai.httpssubstack.com/feed"
+
     - id: "qbitai"
       name: "量子位"
       url: "https://www.qbitai.com/feed"
 
-    - id: "jiqizhixin"
-      name: "机器之心"
-      url: "https://www.jiqizhixin.com/rss"
+    - id: "tldr"
+      name: "TLDR AI"
+      url: "https://bullrich.dev/tldr-rss/ai"
 
     - id: "huxiu"
       name: "虎嗅"
       url: "https://rss.huxiu.com/"
       max_age_days: 1
 
-    - id: "shixiang"
-      name: "海外独角兽"
-      url: "https://wechat2rss.bestblogs.dev/feed/7200d3a5e976d231deb1e40ad33745c0e649b029.xml"
-
     - id: "wallstreet"
       name: "华尔街见闻"
       url: "https://dedicated.wallstreetcn.com/rss.xml"
       max_age_days: 1
 
-    - id: "youxiputao"
-      name: "游戏葡萄"
-      url: "https://youxiputao.com/feed"
+    - id: "aiandgame"
+      name: "AI and Game"
+      url: "https://api.substack.com/feed/podcast/1069672/s/123754/private/838acf8b-feee-4145-9613-126dd1ab53d1.rss"
 
     - id: "indienova"
-      name: "indienova 独立精神"
+      name: "Indienova 独立精神"
       url: "https://indienova.com/feed/"
 
-    - id: "game-informer"
-      name: "Game Informer"
-      url: "https://gameinformer.com/rss.xml"
+    - id: "naavik"
+      name: "Naavik"
+      url: "https://naavik.substack.com/feed"
 
-    - id: "gamesindustrybiz"
-      name: "gamesindustry.biz"
-      url: "https://www.gamesindustry.biz/feed"
+    - id: "gamediscover"
+      name: "GameDiscover"
+      url: "https://newsletter.gamediscover.co/feed"
 
     - id: "chule"
       name: "触乐"
       url: "https://www.chuapp.com/feed"
 
+    - id: "gamesindustry"
+      name: "gamesindustry.biz"
+      url: "https://www.gamesindustry.biz/feed"
+
+    - id: "techcrunch"
+      name: "TechCrunch"
+      url: "https://techcrunch.com/category/venture/feed/"
+      
 
     # 自定义源示例
     # - id: "custom-feed"
