@@ -110,15 +110,11 @@ rss:
 
     - id: "shixiang"
       name: "海外独角兽"
-      url: "https://feed.hamibot.com/api/feeds/613570931269c358aa0f0cc2"
+      url: "https://wechat2rss.bestblogs.dev/feed/7200d3a5e976d231deb1e40ad33745c0e649b029.xml"
 
     - id: "wallstreet"
       name: "华尔街见闻"
-      url: "https://feed.hamibot.com/api/feeds/615b96121269c358aa15bf50"
-
-    - id: "appso"
-      name: "APPSO"
-      url: "https://feed.hamibot.com/api/feeds/612703b0221f954f5e10f936"
+      url: "https://dedicated.wallstreetcn.com/rss.xml"
 
     - id: "youxiputao"
       name: "游戏葡萄"
