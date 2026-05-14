@@ -145,6 +145,10 @@ rss:
     - id: "techcrunch"
       name: "TechCrunch"
       url: "https://techcrunch.com/category/venture/feed/"
+
+    - id: "gitHubtrending"
+      name: "GitHubTrending"
+      url: "https://mshibanern.github.io/GitHubTrendingRSS/daily/all.atom"
       
 
     # 自定义源示例
