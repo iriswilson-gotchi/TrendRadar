@@ -55,8 +55,8 @@ schedule:
 platforms:
   enabled: true                        # 是否启用热榜平台抓取
   sources:
-    - id: "github"
-      name: "GitHub"
+    - id: ""
+      name: ""
 
 # ===============================================================
 # 3. 数据源 - RSS 订阅
