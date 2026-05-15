@@ -8,7 +8,7 @@
 """
 
 from pathlib import Path
-from typing import Dict, List, Optional, Callable
+from typing import Any, Dict, List, Optional, Callable
 
 
 def prepare_report_data(
@@ -154,6 +154,7 @@ def generate_html_report(
     render_html_func: Optional[Callable] = None,
     matches_word_groups_func: Optional[Callable] = None,
     load_frequency_words_func: Optional[Callable] = None,
+    storage: Optional[Any] = None,
 ) -> str:
     """
     生成 HTML 报告
@@ -232,5 +233,14 @@ def generate_html_report(
     root_index = Path("index.html")
     with open(root_index, "w", encoding="utf-8") as f:
         f.write(html_content)
+
+    # 4. 上传到远程存储（如果配置了远程后端）
+    if storage is not None:
+        try:
+            result = storage.save_html_report(html_content, snapshot_filename)
+            if result:
+                print(f"HTML 报告已上传到远程存储: {result}")
+        except Exception as e:
+            print(f"HTML 报告上传远程存储失败: {e}")
 
     return snapshot_file
