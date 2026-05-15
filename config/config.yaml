@@ -102,7 +102,7 @@ rss:
 
     - id: "tldr"
       name: "TLDR AI"
-      url: "https://bullrich.dev/tldr-rss/ai"
+      url: "https://tldr.tech/api/rss/ai"
 
     - id: "huxiu"
       name: "虎嗅"
@@ -144,7 +144,7 @@ rss:
 
     - id: "gitHubtrending"
       name: "GitHubTrending"
-      url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.atom"
+      url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml"
       
 
     # 自定义源示例
