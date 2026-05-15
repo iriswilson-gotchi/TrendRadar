@@ -126,7 +126,7 @@ rss:
 
     - id: "naavik"
       name: "Naavik"
-      url: "https://naavik.substack.com/feed"
+      url: "https://kill-the-newsletter.com/feeds/yqj7374urexnc4p8xpjt.xml"
       max_age_days: 3
 
     - id: "gamediscover"
