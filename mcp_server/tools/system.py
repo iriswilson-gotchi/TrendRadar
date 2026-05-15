@@ -211,8 +211,8 @@ class SystemManagementTools:
         """
         try:
             from trendradar.crawler.fetcher import DataFetcher
-            from trendradar.storage.local import LocalStorageBackend
             from trendradar.storage.base import convert_crawl_results_to_news_data
+            from trendradar.storage.manager import StorageManager
             from trendradar.utils.time import get_configured_time, format_date_folder, format_time_filename
             from ..services.cache_service import get_cache
 
@@ -246,10 +246,40 @@ class SystemManagementTools:
                 failed_ids=failed_ids, crawl_time=crawl_time_str, crawl_date=crawl_date
             )
 
-            storage = LocalStorageBackend(
-                data_dir=str(self.project_root / "output"),
-                enable_txt=True, enable_html=True, timezone=timezone
-            )
+            # 3. 创建存储后端（根据环境变量自动选择本地/远程）
+            import os
+            has_remote = all([
+                os.environ.get('S3_ENDPOINT_URL'),
+                os.environ.get('S3_BUCKET_NAME'),
+                os.environ.get('S3_ACCESS_KEY_ID'),
+                os.environ.get('S3_SECRET_ACCESS_KEY'),
+            ])
+
+            if has_remote:
+                try:
+                    from trendradar.storage.remote import RemoteStorageBackend
+                    storage = RemoteStorageBackend(
+                        bucket_name=os.environ['S3_BUCKET_NAME'],
+                        access_key_id=os.environ['S3_ACCESS_KEY_ID'],
+                        secret_access_key=os.environ['S3_SECRET_ACCESS_KEY'],
+                        endpoint_url=os.environ['S3_ENDPOINT_URL'],
+                        region=os.environ.get('S3_REGION', ''),
+                        enable_txt=True, enable_html=True, timezone=timezone,
+                    )
+                    print(f"[System] 使用远程存储后端 (bucket: {os.environ['S3_BUCKET_NAME']})")
+                except ImportError:
+                    print("[System] boto3 未安装，回退到本地存储")
+                    from trendradar.storage.local import LocalStorageBackend
+                    storage = LocalStorageBackend(
+                        data_dir=str(self.project_root / "output"),
+                        enable_txt=True, enable_html=True, timezone=timezone,
+                    )
+            else:
+                from trendradar.storage.local import LocalStorageBackend
+                storage = LocalStorageBackend(
+                    data_dir=str(self.project_root / "output"),
+                    enable_txt=True, enable_html=True, timezone=timezone,
+                )
 
             try:
                 save_success, save_error_msg, saved_files = self._persist_crawl_data(
