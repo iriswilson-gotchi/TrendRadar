@@ -50,8 +50,8 @@ def _format_list_content(text: str) -> str:
     result = re.sub(r'([。！？；，、])\s*([a-zA-Z0-9\u4e00-\u9fa5]+(方面|领域)[:：])', r'\1\n\2', result)
 
     # 6. 处理 【标签】 格式
-    # 6a. 标签前确保空行分隔（文本开头除外）
-    result = re.sub(r'(?<=\S)\n*(【[^】]+】)', r'\n\n\1', result)
+    # 6a. 标签前无需空行分隔
+    result = re.sub(r'(?<=\S)\n*(【[^】]+】)', r'\n\1', result)
     # 6b. 合并标签与被换行拆开的冒号：【tag】\n： → 【tag】：
     result = re.sub(r'(【[^】]+】)\n+([:：])', r'\1\2', result)
     # 6c. 标签后（含可选冒号），如果紧跟非空白非冒号内容则另起一行
@@ -60,7 +60,7 @@ def _format_list_content(text: str) -> str:
 
     # 7. 在列表项之间增加视觉空行（排除版本号/小数）
     # 排除 【标签】 行（以】结尾）和子标题行（以冒号结尾）之后的情况，避免标题与首项之间出现空行
-    result = re.sub(r'(?<![:：】])\n(\d+\.)(?!\d)', r'\n\n\1', result)
+    result = re.sub(r'(?<![:：】])\n(\d+\.)(?!\d)', r'\n\1', result)
 
     return result
 
