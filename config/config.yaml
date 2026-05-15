@@ -103,6 +103,7 @@ rss:
     - id: "tldr"
       name: "TLDR AI"
       url: "https://tldr.tech/api/rss/ai"
+      max_age_days: 2
 
     - id: "huxiu"
       name: "虎嗅"
@@ -117,6 +118,7 @@ rss:
     - id: "aiandgame"
       name: "AI and Game"
       url: "https://www.aiandgames.com/feed"
+      max_age_days: 3
 
     - id: "indienova"
       name: "Indienova 独立精神"
@@ -125,6 +127,7 @@ rss:
     - id: "naavik"
       name: "Naavik"
       url: "https://naavik.substack.com/feed"
+      max_age_days: 3
 
     - id: "gamediscover"
       name: "GameDiscover"
@@ -145,6 +148,7 @@ rss:
     - id: "gitHubtrending"
       name: "GitHubTrending"
       url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml"
+      max_age_days: 2
       
 
     # 自定义源示例
