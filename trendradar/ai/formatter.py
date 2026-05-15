@@ -108,23 +108,17 @@ def render_ai_analysis_feishu(result: AIAnalysisResult) -> str:
         if result.skipped:
             return f"ℹ️ {result.error}"
         return f"⚠️ AI 分析失败: {result.error}"
-
     lines = ["**✨ AI 热点分析**", ""]
-
     if result.core_trends:
         lines.extend(["**核心趋势与推演**", _format_list_content(result.core_trends), ""])
-
-    if result.signals:
+    if result.signals is not None:
         lines.extend(["", "**弱信号与异动**", _format_list_content(result.signals), ""])
-
-    if result.deep_dive:
-        lines.extend(["**值得精读**", _format_list_content(result.deep_dive), ""])
-
+    if result.deep_dive is not None:
+        lines.extend(["", "**值得精读**", _format_list_content(result.deep_dive), ""])
     if result.standalone_summaries:
         summaries_text = _format_standalone_summaries(result.standalone_summaries)
         if summaries_text:
             lines.extend(["**独立源点速览**", summaries_text])
-
     return "\n".join(lines)
 
 
