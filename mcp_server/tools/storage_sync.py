@@ -271,45 +271,54 @@ class StorageSyncTools:
             synced_dates = []
             skipped_dates = []
             failed_dates = []
+            synced_html_count = 0
 
             for date_str in target_dates:
-                # 检查本地是否已存在
+                # 检查本地是否已存在 news.db
                 if date_str in local_dates:
                     skipped_dates.append(date_str)
-                    continue
+                else:
+                    # 拉取 news.db
+                    try:
+                        local_date_dir = local_dir / date_str
+                        local_db_path = local_date_dir / "news.db"
+                        remote_key = f"news/{date_str}.db"
 
-                # 拉取单个日期
+                        local_date_dir.mkdir(parents=True, exist_ok=True)
+                        remote_backend.s3_client.download_file(
+                            remote_backend.bucket_name,
+                            remote_key,
+                            str(local_db_path)
+                        )
+                        synced_dates.append(date_str)
+                        print(f"[存储同步] 已拉取: {date_str}")
+                    except Exception as e:
+                        failed_dates.append({"date": date_str, "error": str(e)})
+                        print(f"[存储同步] 拉取失败 ({date_str}): {e}")
+
+                # 拉取 HTML 报告（独立于 news.db，始终尝试拉取最新）
                 try:
-                    local_date_dir = local_dir / date_str
-                    local_db_path = local_date_dir / "news.db"
-                    remote_key = f"news/{date_str}.db"
-
-                    local_date_dir.mkdir(parents=True, exist_ok=True)
-                    remote_backend.s3_client.download_file(
-                        remote_backend.bucket_name,
-                        remote_key,
-                        str(local_db_path)
-                    )
-                    synced_dates.append(date_str)
-                    print(f"[存储同步] 已拉取: {date_str}")
+                    n = remote_backend._pull_html_files(date_str, local_dir)
+                    synced_html_count += n
                 except Exception as e:
-                    failed_dates.append({"date": date_str, "error": str(e)})
-                    print(f"[存储同步] 拉取失败 ({date_str}): {e}")
+                    print(f"[存储同步] 拉取 HTML 失败 ({date_str}): {e}")
 
             return {
                 "success": True,
                 "summary": {
                     "description": "远程存储同步结果",
                     "synced_files": len(synced_dates),
+                    "synced_html": synced_html_count,
                     "skipped_count": len(skipped_dates),
                     "failed_count": len(failed_dates)
                 },
                 "data": {
                     "synced_dates": synced_dates,
                     "skipped_dates": skipped_dates,
-                    "failed_dates": failed_dates
+                    "failed_dates": failed_dates,
+                    "synced_html_count": synced_html_count
                 },
-                "message": f"成功同步 {len(synced_dates)} 天数据" + (
+                "message": f"成功同步 {len(synced_dates)} 天数据库 + {synced_html_count} 个 HTML 报告" + (
                     f"，跳过 {len(skipped_dates)} 天（本地已存在）" if skipped_dates else ""
                 ) + (
                     f"，失败 {len(failed_dates)} 天" if failed_dates else ""
