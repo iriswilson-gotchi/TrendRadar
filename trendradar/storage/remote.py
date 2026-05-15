@@ -617,8 +617,59 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
             print(f"[远程存储] 保存 TXT 快照失败: {e}")
             return None
 
+    def _get_remote_html_key(self, date_str: str, filename: str) -> str:
+        """
+        获取 HTML 文件在远程存储中的对象键
+
+        Args:
+            date_str: 日期字符串 (YYYY-MM-DD)
+            filename: 文件名
+
+        Returns:
+            远程对象键，如 "html/2026-05-15/22-11.html"
+        """
+        return f"html/{date_str}/{filename}"
+
+    def _upload_html(self, file_path: Path, date_str: str, filename: str) -> bool:
+        """
+        上传 HTML 文件到远程存储
+
+        Args:
+            file_path: 本地 HTML 文件路径
+            date_str: 日期字符串
+            filename: 文件名
+
+        Returns:
+            是否上传成功
+        """
+        r2_key = self._get_remote_html_key(date_str, filename)
+
+        if not file_path.exists():
+            print(f"[远程存储] HTML 文件不存在，无法上传: {file_path}")
+            return False
+
+        try:
+            file_size = file_path.stat().st_size
+
+            with open(file_path, 'rb') as f:
+                file_content = f.read()
+
+            self.s3_client.put_object(
+                Bucket=self.bucket_name,
+                Key=r2_key,
+                Body=file_content,
+                ContentLength=file_size,
+                ContentType='text/html; charset=utf-8',
+            )
+            print(f"[远程存储] HTML 报告已上传: {r2_key} ({file_size} bytes)")
+            return True
+
+        except Exception as e:
+            print(f"[远程存储] HTML 上传失败: {e}")
+            return False
+
     def save_html_report(self, html_content: str, filename: str) -> Optional[str]:
-        """保存 HTML 报告到临时目录"""
+        """保存 HTML 报告到临时目录并上传到远程存储"""
         if not self.enable_html:
             return None
 
@@ -633,6 +684,10 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
                 f.write(html_content)
 
             print(f"[远程存储] HTML 报告已保存: {file_path}")
+
+            # 上传到远程存储
+            self._upload_html(file_path, date_folder, filename)
+
             return str(file_path)
 
         except Exception as e:
@@ -770,16 +825,85 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
     # 远程特有功能：数据拉取和列表
     # ========================================
 
+    def _list_html_files(self, date_str: str) -> List[str]:
+        """
+        列出远程存储中指定日期的 HTML 文件
+
+        Args:
+            date_str: 日期字符串 (YYYY-MM-DD)
+
+        Returns:
+            HTML 文件名列表
+        """
+        filenames = []
+        prefix = f"html/{date_str}/"
+
+        try:
+            paginator = self.s3_client.get_paginator('list_objects_v2')
+            pages = paginator.paginate(Bucket=self.bucket_name, Prefix=prefix)
+
+            for page in pages:
+                if 'Contents' not in page:
+                    continue
+                for obj in page['Contents']:
+                    key = obj['Key']
+                    # 从 "html/2026-05-15/22-11.html" 中提取 "22-11.html"
+                    filename = key[len(prefix):]
+                    if filename:
+                        filenames.append(filename)
+
+        except Exception as e:
+            print(f"[远程存储] 列出 HTML 文件失败 ({date_str}): {e}")
+
+        return filenames
+
+    def _pull_html_files(self, date_str: str, local_dir: Path) -> int:
+        """
+        从远程拉取指定日期的所有 HTML 文件到本地
+
+        Args:
+            date_str: 日期字符串 (YYYY-MM-DD)
+            local_dir: 本地数据根目录 (如 output/)
+
+        Returns:
+            成功拉取的 HTML 文件数量
+        """
+        html_files = self._list_html_files(date_str)
+        if not html_files:
+            return 0
+
+        pulled = 0
+        local_html_dir = local_dir / "html" / date_str
+        local_html_dir.mkdir(parents=True, exist_ok=True)
+
+        for filename in html_files:
+            local_path = local_html_dir / filename
+            if local_path.exists():
+                continue
+
+            remote_key = f"html/{date_str}/{filename}"
+            try:
+                response = self.s3_client.get_object(Bucket=self.bucket_name, Key=remote_key)
+                with open(local_path, 'wb') as f:
+                    for chunk in response['Body'].iter_chunks(chunk_size=1024*1024):
+                        f.write(chunk)
+                print(f"[远程存储] 已拉取 HTML: {remote_key} -> {local_path}")
+                pulled += 1
+            except Exception as e:
+                print(f"[远程存储] 拉取 HTML 失败 ({remote_key}): {e}")
+
+        return pulled
+
     def pull_recent_days(self, days: int, local_data_dir: str = "output") -> int:
         """
-        从远程拉取最近 N 天的数据到本地
+        从远程拉取最近 N 天的数据到本地（包括 SQLite 数据库和 HTML 报告）
 
         Args:
             days: 拉取天数
             local_data_dir: 本地数据目录
 
         Returns:
-            成功拉取的数据库文件数量
+            成功拉取的文件总数（数据库 + HTML）
         """
         if days <= 0:
             return 0
@@ -787,7 +911,8 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
         local_dir = Path(local_data_dir)
         local_dir.mkdir(parents=True, exist_ok=True)
 
-        pulled_count = 0
+        pulled_db_count = 0
+        pulled_html_count = 0
         now = self._get_configured_time()
 
         print(f"[远程存储] 开始拉取最近 {days} 天的数据...")
@@ -796,37 +921,34 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
             date = now - timedelta(days=i)
             date_str = date.strftime("%Y-%m-%d")
 
-            # 本地目标路径
+            # --- 拉取 news.db ---
             local_date_dir = local_dir / date_str
             local_db_path = local_date_dir / "news.db"
 
-            # 如果本地已存在，跳过
             if local_db_path.exists():
                 print(f"[远程存储] 跳过（本地已存在）: {date_str}")
-                continue
+            else:
+                remote_key = f"news/{date_str}.db"
+                if self._check_object_exists(remote_key):
+                    try:
+                        local_date_dir.mkdir(parents=True, exist_ok=True)
+                        response = self.s3_client.get_object(Bucket=self.bucket_name, Key=remote_key)
+                        with open(local_db_path, 'wb') as f:
+                            for chunk in response['Body'].iter_chunks(chunk_size=1024*1024):
+                                f.write(chunk)
+                        print(f"[远程存储] 已拉取: {remote_key} -> {local_db_path}")
+                        pulled_db_count += 1
+                    except Exception as e:
+                        print(f"[远程存储] 拉取失败 ({date_str}): {e}")
+                else:
+                    print(f"[远程存储] 跳过（远程不存在）: {date_str}")
 
-            # 远程对象键
-            remote_key = f"news/{date_str}.db"
+            # --- 拉取 HTML 报告 ---
+            pulled_html_count += self._pull_html_files(date_str, local_dir)
 
-            # 检查远程是否存在
-            if not self._check_object_exists(remote_key):
-                print(f"[远程存储] 跳过（远程不存在）: {date_str}")
-                continue
-
-            # 下载（使用 get_object + iter_chunks 处理 chunked encoding）
-            try:
-                local_date_dir.mkdir(parents=True, exist_ok=True)
-                response = self.s3_client.get_object(Bucket=self.bucket_name, Key=remote_key)
-                with open(local_db_path, 'wb') as f:
-                    for chunk in response['Body'].iter_chunks(chunk_size=1024*1024):
-                        f.write(chunk)
-                print(f"[远程存储] 已拉取: {remote_key} -> {local_db_path}")
-                pulled_count += 1
-            except Exception as e:
-                print(f"[远程存储] 拉取失败 ({date_str}): {e}")
-
-        print(f"[远程存储] 拉取完成，共下载 {pulled_count} 个数据库文件")
-        return pulled_count
+        total = pulled_db_count + pulled_html_count
+        print(f"[远程存储] 拉取完成，共下载 {pulled_db_count} 个数据库 + {pulled_html_count} 个 HTML 报告")
+        return total
 
     def list_remote_dates(self) -> List[str]:
         """
