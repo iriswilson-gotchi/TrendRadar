@@ -92,10 +92,6 @@ rss:
   # - 正整数：覆盖全局设置，只推送此天数内的文章
   # - 0：禁用此频道的新鲜度过滤，推送所有文章
   feeds:
-    - id: "importai"
-      name: "importai"
-      url: "https://importai.substack.com/feed"
-
     - id: "qbitai"
       name: "量子位"
       url: "https://www.qbitai.com/feed"
@@ -118,7 +114,7 @@ rss:
     - id: "aiandgame"
       name: "AI and Game"
       url: "https://www.aiandgames.com/feed"
-      max_age_days: 3
+      max_age_days: 5
 
     - id: "indienova"
       name: "Indienova 独立精神"
@@ -127,7 +123,7 @@ rss:
     - id: "naavik"
       name: "Naavik"
       url: "https://kill-the-newsletter.com/feeds/yqj7374urexnc4p8xpjt.xml"
-      max_age_days: 3
+      max_age_days: 8
 
     - id: "gamediscover"
       name: "GameDiscover"
