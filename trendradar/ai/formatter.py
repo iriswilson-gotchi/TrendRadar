@@ -115,7 +115,7 @@ def render_ai_analysis_feishu(result: AIAnalysisResult) -> str:
         lines.extend(["**核心趋势与推演**", _format_list_content(result.core_trends), ""])
 
     if result.signals:
-        lines.extend(["**弱信号与异动**", _format_list_content(result.signals), ""])
+        lines.extend(["","**弱信号与异动**", _format_list_content(result.signals), ""])
 
     if result.deep_dive:
         lines.extend(["**值得精读**", _format_list_content(result.deep_dive), ""])
